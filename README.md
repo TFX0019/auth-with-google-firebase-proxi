@@ -1,30 +1,50 @@
-# React + TypeScript + Vite
+### Run project
+`bun run dev`
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Firebase configuration in: `/src/config/firebase.ts`
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```jsx
+const firebaseConfig = {
+    ...
+    authDomain: "localhost:5173",
+    ...
+  };
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Firebase configuration in: `/vite.config.ts`
+
+Install: `bun add @vitejs/plugin-basic-ssl -D`
+
+```ts
+import basicSsl from '@vitejs/plugin-basic-ssl'
+
+export default defineConfig({
+  plugins: [react(), basicSsl()],
+  server: {
+    https: true,
+    proxy: {
+      '/__/auth': {
+        target: 'https://<my-project>.firebaseapp.com',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/__\/auth/, '/__/auth'),
+      },
+    },
+  },
+});
+
+```
+
+### Config in Google Cloud
+
+Add in `ID de clientes OAuth 2.0` your API KEY:
+
+![Image](1.png)
+![Image](2.png)
+
+
+### Note
+
+If you want to add your domain in production you must change localhost:5173 for your domain and add it in Firebase `Authentication > Configuration > Authorized Domains`
+
+![Image](3.png)
